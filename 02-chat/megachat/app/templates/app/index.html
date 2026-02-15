@@ -1,0 +1,37 @@
+{% extends "app/base.html" %}
+{% block title %}Комнаты — МегаЧат{% endblock %}
+{% block content %}
+<h1>МегаЧат</h1>
+<p>Выберите комнату, присоединитесь по коду или создайте новую.</p>
+
+<section class="join-by-code">
+    <h2>Присоединиться к комнате</h2>
+    <form class="join-form" action="{% url 'app:index' %}" method="get">
+        <input type="text" name="slug" placeholder="Введите код комнаты (например abc12k)" maxlength="10" pattern="[a-z0-9-]+" title="Только латинские буквы, цифры и дефис">
+        <button type="submit" class="btn">Войти в комнату</button>
+    </form>
+    <p class="join-hint">Код комнаты есть в ссылке: /room/<strong>код</strong>/</p>
+</section>
+
+<form class="create-form" method="post" action="{% url 'app:create_room' %}">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="Название новой комнаты" maxlength="100">
+    <button type="submit" class="btn">Создать комнату</button>
+</form>
+
+<h2>Комнаты</h2>
+<ul class="room-list">
+    {% for room in rooms %}
+    <li>
+        <a href="{% url 'app:room' room.slug %}" class="room-link">Присоединиться — {{ room.name }}</a>
+        <span class="room-slug">код: <code>{{ room.slug }}</code></span>
+        <form class="room-actions" method="post" action="{% url 'app:delete_room' room.slug %}" onsubmit="return confirm('Удалить комнату?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Удалить</button>
+        </form>
+    </li>
+    {% empty %}
+    <li>Пока нет комнат. Создайте первую.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

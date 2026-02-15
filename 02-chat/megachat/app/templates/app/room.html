@@ -1,0 +1,91 @@
+{% extends "app/base.html" %}
+{% block title %}{{ room.name }} — МегаЧат{% endblock %}
+{% block content %}
+<h1>{{ room.name }}</h1>
+<p><a href="{% url 'app:index' %}">← Все комнаты</a></p>
+
+{% if not user_name %}
+<div class="username-form">
+    <form method="post" action="{% url 'app:room' room.slug %}">
+        {% csrf_token %}
+        <input type="hidden" name="set_username" value="1">
+        <input type="text" name="user_name" placeholder="Ваше имя" maxlength="40" required>
+        <button type="submit" class="btn">Войти в чат</button>
+    </form>
+</div>
+{% else %}
+<div id="status">Подключение…</div>
+<div id="messages">
+    {% for msg in recent_messages %}
+    <div class="msg {% if msg.user_name == user_name %}own{% else %}other{% endif %}" data-id="{{ msg.id }}">
+        <div class="who">{{ msg.user_name }}</div>
+        <div class="text">{{ msg.content }}</div>
+        <div class="time">{{ msg.timestamp|time:"H:i" }}</div>
+    </div>
+    {% endfor %}
+</div>
+<form id="send-form">
+    <input type="text" id="content" placeholder="Сообщение…" maxlength="2000" autocomplete="off">
+    <button type="submit" class="btn">Отправить</button>
+</form>
+<p class="current-user">Вы: <strong>{{ user_name }}</strong></p>
+{% endif %}
+{% endblock %}
+{% block extra_js %}
+{% if user_name %}
+<script>
+(function() {
+    const roomSlug = '{{ room.slug }}';
+    const userName = '{{ user_name|escapejs }}';
+    const scheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = scheme + '//' + window.location.host + '/ws/room/' + roomSlug + '/';
+    const messagesEl = document.getElementById('messages');
+    const statusEl = document.getElementById('status');
+    const form = document.getElementById('send-form');
+    const input = document.getElementById('content');
+
+    const ws = new WebSocket(wsUrl);
+
+    ws.onopen = function() {
+        statusEl.textContent = 'Онлайн';
+        ws.send(JSON.stringify({ type: 'set_username', user_name: userName }));
+    };
+
+    ws.onclose = function() {
+        statusEl.textContent = 'Отключено. Обновите страницу.';
+    };
+
+    ws.onerror = function() {
+        statusEl.textContent = 'Ошибка соединения.';
+    };
+
+    ws.onmessage = function(e) {
+        const msg = JSON.parse(e.data);
+        const div = document.createElement('div');
+        const isOwn = msg.user_name === userName;
+        div.className = 'msg ' + (isOwn ? 'own' : 'other');
+        div.dataset.id = msg.id;
+        div.innerHTML = '<div class="who">' + escapeHtml(msg.user_name) + '</div>' +
+            '<div class="text">' + escapeHtml(msg.content) + '</div>' +
+            '<div class="time">' + msg.timestamp + '</div>';
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    };
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const content = input.value.trim();
+        if (!content) return;
+        ws.send(JSON.stringify({ content: content }));
+        input.value = '';
+    });
+
+    function escapeHtml(s) {
+        const div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+    }
+})();
+</script>
+{% endif %}
+{% endblock %}
