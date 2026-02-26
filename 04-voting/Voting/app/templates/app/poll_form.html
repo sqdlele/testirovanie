@@ -1,0 +1,14 @@
+{% extends "app/base.html" %}
+{% block title %}Новый опрос{% endblock %}
+
+{% block content %}
+<h1>Новый опрос</h1>
+<div class="card">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Создать</button>
+    </form>
+</div>
+<a href="{% url 'poll_list' %}" class="back-link">К списку опросов</a>
+{% endblock %}

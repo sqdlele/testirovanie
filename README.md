@@ -69,3 +69,22 @@ python manage.py runserver
 cd 03-ToDoList/Todolist
 python manage.py test app
 ```
+
+---
+
+### 04-voting 
+
+**Запуск приложения:**
+```bash
+cd 04-voting/Voting
+python manage.py migrate
+python manage.py runserver
+```
+
+В браузере: http://127.0.0.1:8000/
+
+**Тесты:**
+```bash
+cd 04-voting/Voting
+python manage.py test app
+```

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Опросы{% endblock %} — Голосование</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(145deg, #e8eef5 0%, #dde5ed 100%);
+            color: #2c2520;
+        }
+        .nav {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 2rem;
+            background: #fff;
+            border-bottom: 1px solid rgba(0,0,0,.08);
+            box-shadow: 0 1px 4px rgba(0,0,0,.04);
+        }
+        .nav-links { display: flex; gap: 0.75rem; align-items: center; }
+        .nav a { color: #4a6fa5; text-decoration: none; font-size: 0.95rem; }
+        .nav a:hover { text-decoration: underline; }
+        .nav .user { color: #555; font-size: 0.9rem; }
+        .wrap { width: 100%; padding: 1rem; }
+        h1 { font-size: 1.75rem; font-weight: 600; margin: 0 0 1rem; color: #1a1614; }
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.06);
+            padding: 0.9rem 1.1rem;
+            margin-bottom: 0.6rem;
+        }
+        .btn {
+            padding: 0.65rem 1.1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary { background: #4a6fa5; color: #fff; }
+        .btn-primary:hover { background: #3d5d8c; }
+        .btn-ghost { background: #e8eef5; color: #3d5d8c; }
+        .btn-ghost:hover { background: #dde5ed; }
+        input[type="text"], input[type="password"], input[type="email"] {
+            width: 100%;
+            padding: 0.65rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #4a6fa5;
+            box-shadow: 0 0 0 2px rgba(74,111,165,.2);
+        }
+        textarea { width: 100%; padding: 0.65rem 1rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; resize: vertical; font-family: inherit; }
+        label { display: block; margin-bottom: 0.25rem; font-weight: 500; }
+        .form-err { color: #c45c4a; margin-bottom: 0.75rem; }
+        .poll-list { list-style: none; padding: 0; margin: 0; }
+        .poll-item {
+            padding: 0.9rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        .poll-item:last-child { border-bottom: none; }
+        .poll-item a { color: #4a6fa5; text-decoration: none; font-weight: 500; }
+        .poll-item a:hover { text-decoration: underline; }
+        .choice-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #dde5ed;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .choice-btn:hover { background: #e8eef5; border-color: #4a6fa5; }
+        .results-row { padding: 0.35rem 0; display: flex; justify-content: space-between; align-items: center; }
+        .bar-wrap { flex: 1; margin: 0 0.75rem; height: 20px; background: #eee; border-radius: 4px; overflow: hidden; }
+        .bar { height: 100%; background: #4a6fa5; border-radius: 4px; }
+        .empty-msg { color: #888; padding: 0.75rem 0; margin: 0; font-size: 0.9rem; }
+        .back-link { display: inline-block; margin-top: 0.5rem; color: #4a6fa5; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .back-link:hover { text-decoration: underline; }
+        .comment { padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0; }
+        .comment:last-child { border-bottom: none; }
+        .comment-meta { font-size: 0.85rem; color: #666; margin-bottom: 0.25rem; }
+        .comment-text { white-space: pre-wrap; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="nav">
+        <a href="{% url 'poll_list' %}">Опросы</a>
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+            <span class="user">{{ user.username }}</span>
+            <a href="{% url 'logout' %}">Выйти</a>
+            {% else %}
+            <a href="{% url 'login' %}">Войти</a>
+            <a href="{% url 'register' %}">Регистрация</a>
+            {% endif %}
+        </div>
+    </nav>
+    <div class="wrap">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

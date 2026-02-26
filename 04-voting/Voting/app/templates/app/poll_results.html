@@ -1,0 +1,22 @@
+{% extends "app/base.html" %}
+{% block title %}Результаты{% endblock %}
+
+{% block content %}
+<h1>{{ poll.question }}</h1>
+<div class="card">
+    <p style="margin-top:0;">Всего голосов: {{ total_votes }}</p>
+    {% for choice in choices %}
+    <div class="results-row">
+        <span style="min-width:120px;">{{ choice.text }}</span>
+        <div class="bar-wrap">
+            <div class="bar" style="width: {% if total_votes %}
+            {% widthratio choice.votes total_votes 100 %}
+            {% else %}0{% endif %}%;"></div>
+        </div>
+        <span><strong>{{ choice.votes }}</strong></span>
+    </div>
+    {% endfor %}
+</div>
+<a href="{% url 'poll_detail' poll.pk %}" class="btn btn-ghost">Голосовать снова</a>
+<a href="{% url 'poll_list' %}" class="back-link">К списку опросов</a>
+{% endblock %}

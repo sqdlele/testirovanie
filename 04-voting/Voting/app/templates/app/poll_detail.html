@@ -1,0 +1,62 @@
+{% extends "app/base.html" %}
+{% block title %}Голосовать{% endblock %}
+
+{% block content %}
+<h1>{{ poll.question }}</h1>
+
+{% if has_voted %}
+<div class="card">
+    <p style="margin:0; font-size:0.95rem;">Вы уже голосовали в этом опросе.</p>
+</div>
+{% elif user.is_authenticated %}
+<div class="card">
+    <p style="margin:0 0 0.5rem; font-size:0.95rem;">Выберите вариант:</p>
+    <form method="post" action="{% url 'poll_vote' poll.pk %}">
+        {% csrf_token %}
+        {% for choice in poll.choice_set.all %}
+        <button type="submit" name="choice" value="{{ choice.pk }}" class="choice-btn">{{ choice.text }}</button>
+        {% endfor %}
+    </form>
+</div>
+{% else %}
+<div class="card">
+    <p style="margin:0; font-size:0.95rem;">Чтобы голосовать, <a href="{% url 'login' %}?next={{ request.build_absolute_uri }}">войдите</a>.</p>
+</div>
+{% endif %}
+
+<div class="card">
+    <p style="margin:0 0 0.5rem; font-size:0.9rem; color:#666;">Голоса: {{ total_votes }}</p>
+    {% for choice in choices %}
+    <div class="results-row">
+        <span style="min-width:100px; font-size:0.9rem;">{{ choice.text }}</span>
+        <div class="bar-wrap">
+            <div class="bar" style="width: {% if total_votes %}{% widthratio choice.votes total_votes 100 %}{% else %}0{% endif %}%;"></div>
+        </div>
+        <span style="font-size:0.9rem;"><strong>{{ choice.votes }}</strong></span>
+    </div>
+    {% endfor %}
+</div>
+
+<a href="{% url 'poll_list' %}" class="btn btn-ghost">К списку опросов</a>
+
+<div class="card" style="margin-top: 0.75rem;">
+    <h2 style="font-size: 1rem; margin: 0 0 0.5rem;">Комментарии ({{ comments|length }})</h2>
+    {% for c in comments %}
+    <div class="comment">
+        <div class="comment-meta">{{ c.author.username }} ({{ c.created_at|date:"d.m.Y H:i" }})</div>
+        <div class="comment-text">{{ c.text }}</div>
+    </div>
+    {% empty %}
+    <p class="empty-msg">Пока нет комментариев.</p>
+    {% endfor %}
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'poll_comment' poll.pk %}" style="margin-top: 0.5rem;">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+    {% else %}
+    <p style="margin:0.5rem 0 0; font-size: 0.85rem; color:#666;">Войдите, чтобы оставить комментарий.</p>
+    {% endif %}
+</div>
+{% endblock %}
