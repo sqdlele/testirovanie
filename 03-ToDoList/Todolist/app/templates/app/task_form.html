@@ -1,0 +1,23 @@
+{% extends "app/base.html" %}
+{% block title %}Редактировать задачу{% endblock %}
+
+{% block content %}
+<h1>Редактировать задачу</h1>
+
+<div class="card">
+    <form method="post">
+        {% csrf_token %}
+        <p>
+            <label for="id_title">Название</label>
+            <input type="text" name="title" value="{{ form.title.value|default:'' }}" id="id_title" maxlength="200" required
+                   style="width:100%; padding: 0.65rem 1rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; margin-top: 0.25rem;">
+        </p>
+        {% if form.title.errors %}
+            <p style="color: #c45c4a; font-size: 0.9rem;">{{ form.title.errors.0 }}</p>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+</div>
+
+<a href="{% url 'task_list' %}" class="back-link">← Назад к списку</a>
+{% endblock %}

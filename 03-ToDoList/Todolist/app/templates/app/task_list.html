@@ -1,0 +1,42 @@
+{% extends "app/base.html" %}
+{% block title %}Список задач{% endblock %}
+
+{% block content %}
+<h1>Мои задачи</h1>
+
+<div class="card">
+    <form method="post" action="{% url 'task_list' %}">
+        {% csrf_token %}
+        <div class="form-row">
+            {{ form.title }}
+            <button type="submit" class="btn btn-primary">Добавить</button>
+        </div>
+        {% if form.title.errors %}
+            <p style="color: #c45c4a; font-size: 0.9rem; margin: 0.5rem 0 0;">{{ form.title.errors.0 }}</p>
+        {% endif %}
+    </form>
+</div>
+
+<div class="card">
+    <ul class="task-list">
+        {% for task in tasks %}
+        <li class="task-item">
+            <span class="task-title {% if task.completed %}done{% endif %}">{{ task.title }}</span>
+            <div class="task-actions">
+                <a href="{% url 'task_edit' task.pk %}" class="btn btn-ghost btn-sm">Изменить</a>
+                <form method="post" action="{% url 'task_toggle' task.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-ghost btn-sm">{{ task.completed|yesno:"Снять отметку,Выполнено" }}</button>
+                </form>
+                <form method="post" action="{% url 'task_delete' task.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                </form>
+            </div>
+        </li>
+        {% empty %}
+        <li class="empty-msg">Пока нет задач. Добавьте первую выше.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Задачи{% endblock %} — ToDo</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f5f0e8 0%, #e8e2d9 100%);
+            color: #2c2520;
+            padding: 2rem;
+        }
+        .wrap {
+            max-width: 520px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 0 0 1.5rem;
+            color: #1a1614;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.06);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .form-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+        .form-row label { display: none; }
+        .form-row input[type="text"] {
+            flex: 1;
+            padding: 0.65rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .form-row input:focus {
+            outline: none;
+            border-color: #8b7355;
+            box-shadow: 0 0 0 2px rgba(139,115,85,.15);
+        }
+        .btn {
+            padding: 0.65rem 1.1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: #6b5344;
+            color: #fff;
+        }
+        .btn-primary:hover { background: #5a4639; }
+        .btn-ghost {
+            background: #f0ebe5;
+            color: #4a4038;
+        }
+        .btn-ghost:hover { background: #e5dfd6; }
+        .btn-danger {
+            background: #c45c4a;
+            color: #fff;
+        }
+        .btn-danger:hover { background: #b04a38; }
+        .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.85rem; }
+        .task-list { list-style: none; padding: 0; margin: 0; }
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid #f0ebe5;
+        }
+        .task-item:last-child { border-bottom: none; }
+        .task-title {
+            flex: 1;
+            font-size: 1rem;
+        }
+        .task-title.done {
+            text-decoration: line-through;
+            color: #888;
+        }
+        .task-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .empty-msg {
+            text-align: center;
+            color: #888;
+            padding: 2rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #6b5344;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="wrap">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
